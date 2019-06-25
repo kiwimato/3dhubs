@@ -1,0 +1,83 @@
+version: "3"
+services:
+  app:
+    build:
+      context: ./
+      dockerfile: dock/Dockerfile-app
+    user: 102:1337 # 102=app
+    hostname: app
+    restart: always
+    env_file:
+      - dock/db.env
+    entrypoint:
+      - /kick/entrypoint-app.sh
+    volumes:
+      - ./kick:/kick
+      - ./app:/home/app
+      # Authentication - share between containers for security
+      # passwd/group/shadow should be mounted into any container that need the same users
+      - ./conf/passwd:/etc/passwd:ro
+      - ./conf/group:/etc/group:ro
+      - ./conf/shadow:/etc/shadow:ro
+    depends_on:
+      - db
+      - rabbitmq
+      - worker
+
+  db:
+    image: postgres:latest
+    hostname: dbd
+    env_file:
+      - dock/db.env
+    volumes:
+      - ./data-db:/var/lib/postgresql/data
+
+  rabbitmq:
+    image: rabbitmq:3.7-alpine
+    env_file:
+      - dock/rabbitmq.env
+
+  worker:
+    user: 103:1337
+    build:
+      context: ./
+      dockerfile: dock/Dockerfile-celery
+    env_file:
+      - dock/rabbitmq.env
+    volumes:
+      - ./app:/home/app
+      - ./kick:/kick
+      - ./conf/passwd:/etc/passwd:ro
+      - ./conf/group:/etc/group:ro
+      - ./conf/shadow:/etc/shadow:ro
+    entrypoint:
+      - /kick/entrypoint-worker.sh
+
+  nginx:
+    restart: always
+    build:
+      context: .
+      dockerfile: dock/Dockerfile-nginx
+    # Make sure we load the certs if they are renewed
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./app/uwsgi:/home/app/uwsgi
+      - ./app/static:/usr/src/app/static
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+      - ./conf/passwd:/etc/passwd:ro
+      - ./conf/group:/etc/group:ro
+      - ./conf/shadow:/etc/shadow:ro
+    links:
+      - app:app
+
+  certbot:
+    image: certbot/certbot
+    # 12 hours recommended by LetsEncrypt
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    volumes:
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
