@@ -5,7 +5,7 @@ FROM python:3.6-stretch
 
 RUN pip3 install virtualenv celery
 RUN mkdir /home/app /home/env
-RUN chown 102:1337 /home/env -R
+RUN chown 103:1337 /home/env -R
 
 #ADD ./app /home/app
 #WORKDIR /home/app
