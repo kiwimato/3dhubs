@@ -1,7 +1,8 @@
 #!/bin/bash
 
 cd /home
-virtualenv env
+# only create virtualenv if not already created
+[[ -f env/bin/activate ]] || virtualenv env
 source env/bin/activate
 cd app
 chown 103:1337 /home/app/uwsgi/
@@ -25,4 +26,4 @@ if [[ ! -f /tmp/requirements.txt.lock ]]; then
 fi
 
 #uwsgi --socket 0.0.0.0:5000 --protocol=http -w app
-exec runuser -u app "uwsgi --ini /home/app/uwsgi.ini"
+exec runuser -u app "/home/env/bin/uwsgi --ini /home/app/uwsgi.ini"

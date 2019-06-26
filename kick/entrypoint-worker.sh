@@ -1,7 +1,8 @@
 #!/bin/bash
 
 cd /home
-virtualenv env
+# only create virtualenv if not already created
+[[ -f env/bin/activate ]] || virtualenv env
 source env/bin/activate
 cd app
 
