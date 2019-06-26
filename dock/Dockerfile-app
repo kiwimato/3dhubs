@@ -7,7 +7,7 @@ RUN pip3 install virtualenv
 RUN mkdir -p /kick /home/app /home/env
 RUN chown 102:1337 /home/env -R
 
-ADD ./conf/uwsgi.ini /home/app/uwsgi.ini
+#ADD ./conf/uwsgi.ini /home/app/uwsgi.ini
 
 #ADD ./app /home/app
 #WORKDIR /home/app
