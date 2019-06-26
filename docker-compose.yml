@@ -76,7 +76,7 @@ services:
 
   certbot:
     image: certbot/certbot
-    # 12 hours recommended by LetsEncrypt
+    # every 12 hours, as recommended by LetsEncrypt
     entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
     volumes:
       - ./data/certbot/conf:/etc/letsencrypt

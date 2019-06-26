@@ -5,11 +5,11 @@ cd /home
 [[ -f env/bin/activate ]] || virtualenv env
 source env/bin/activate
 cd app
-chown 102:1337 /home/app/uwsgi
-chmod 775 /home/app/uwsgi
 
 # first run
 if [[ ! -f /tmp/requirements.txt.lock ]]; then
+  chown 102:1337 /home/app/uwsgi
+  chmod 775 /home/app/uwsgi
 
   pip3 --cache-dir /tmp install -r requirements.txt && touch /tmp/requirements.txt.lock
   pip3 --cache-dir /tmp install alembic

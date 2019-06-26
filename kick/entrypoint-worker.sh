@@ -6,7 +6,6 @@ cd /home
 source env/bin/activate
 cd app
 
-
 if [[ ! -f /tmp/requirements.txt.lock ]]; then
  pip3 --cache-dir /tmp install -r requirements.txt && touch /tmp/requirements.txt.lock
 fi
