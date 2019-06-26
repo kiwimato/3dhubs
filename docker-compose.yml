@@ -4,7 +4,6 @@ services:
     build:
       context: ./
       dockerfile: dock/Dockerfile-app
-    #user: 102:1337 # 102=app
     hostname: app
     restart: always
     env_file:
