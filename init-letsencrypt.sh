@@ -22,7 +22,7 @@ if [[ ! -e "$data_path/conf/options-ssl-nginx.conf" ]] || [[ ! -e "$data_path/co
   ## changes so it's in line with the assignment: secure ciphers and secure dhparams
   openssl dhparam -out "$data_path/conf/ssl-dhparams.pem" 4096 # 4096 bits
   cat >"$data_path/conf/options-ssl-nginx.conf"<<'EOF'
-ssl_protocols TLSv1.2, TLSv1.3;
+ssl_protocols TLSv1.2 TLSv1.3;
 ssl_prefer_server_ciphers on;
 ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
 ssl_ciphers ECDHE-RSA-AES256-GCM-SHA512:DHE-RSA-AES256-GCM-SHA512:ECDHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES256-GCM-SHA384;
