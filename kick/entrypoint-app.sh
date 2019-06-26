@@ -5,7 +5,8 @@ cd /home
 [[ -f env/bin/activate ]] || virtualenv env
 source env/bin/activate
 cd app
-chown 103:1337 /home/app/uwsgi/
+chown 102:1337 /home/app/uwsgi
+chmod 775 /home/app/uwsgi
 
 # first run
 if [[ ! -f /tmp/requirements.txt.lock ]]; then
@@ -25,5 +26,4 @@ if [[ ! -f /tmp/requirements.txt.lock ]]; then
   alembic upgrade head
 fi
 
-#uwsgi --socket 0.0.0.0:5000 --protocol=http -w app
-exec runuser -u app "/home/env/bin/uwsgi --ini /home/app/uwsgi.ini"
+exec runuser -u app -- /home/env/bin/uwsgi --ini /home/app/uwsgi.ini
