@@ -1,3 +1,16 @@
 # 3D Hubs project
 
-I can say this was a fairly interesting 
+## Summary
+I enjoyed the project because I didn't have a chance to work with Flask & Celery at this level. I've also learned a lot about Docker security best practices because currently we only use Docker in a development environment, so we don't have focus that much on security other than the basics. Overall I can say these facts have slowed me down a bit.
+
+# Issues
+The most pressing issue that slowed me down the most was that the task was not sent to celery, causing Nginx requests to timeout in UWSGI. Having experienced this in the past, I suspected the problems I saw in the past: Bad Nginx/UWSGI config, tried everything - switching to socket files, different protocols etc. Out of options, I've started commenting part of the app.py code to see if that is the cause of the hangs - and it was: example_task.delay().
+To fix this, I took the liberty and modified worker.py so it uses secrets.json file where the Broker URL is stored. I think it's a good practice to have them stored in a different file which you can just .gitignore and add an example in the code if necessary. That, and I had to start the celery worker using `celery` and not `python worker.py` as stated in the docs. This might not be the only way, and surely you might find an easier approach to fix this, but for this project this is the only way I found it works.
+
+# Notes
+* Even though I configured TLS 1.3 to work, unfortunately it's not supported due to outdated OpenSSL on containers, therefore it fallbacks to TLS 1.2.
+* Microcaching: I've set it up, though I after tests with `ab` I didn't see any improvement, either I didn't set it up correctly or because that Nginx proxy is not used for static files. Also noticed `uwsgi_cache` and tried it, but since it should only be used for static files I reverted it back to `proxy_cache`. All these settings you can find in `3dhubs.conf`
+* DH-Params: The command I've used is `openssl dhparam -out ssl-dhparams.pem 4096` when I've initially configured it, and afterwards I addapted the `init-letsencrypt.sh` script. I always generated 4096 DH files ever since I started configured my own VPN servers, about 10 years ago.
+* Extra headers: the `open-ssl-nginx.conf` file which is created by `init-letsencrypt.sh` contains the security tweaks, from ciphers to nosniff & HSTS. About HSTS, I noticed you said you want it to work on the first docker-compose.yml. For this purpose for now, the header is disabled, because otherwise even though everything would start on `docker-compose.yml` due to dummy certificates for Nginx, you won't be able to access the page.
+* Changed UWSGI so it uses socket files, for that reason I've also used custom passwd & group files so they are in the same group, able to access the socket files.
+* Since one of the requirements states that it should work directly after a clone and `docker-compose up` I included the dummy certificates and DH file. These are created also by `init-letsencrypt.sh`, but it's an extra step and generating 4096 bits DH takes quite a long time. This script will generate dummy certificates for Nginx to work and afterwards it will request proper Letsencrypt certificates. I did not write this script, I just adapted it for this project, particularly lines 18-43. 
