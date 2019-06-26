@@ -1,4 +1,3 @@
-LABEL maintainer="dub2sauce@gmail.com"
 FROM python:3.6-stretch
 
 #RUN apt-get update
