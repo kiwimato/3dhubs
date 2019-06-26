@@ -44,6 +44,9 @@ EOF
 
   ## End changes 24/06/2019
   echo
+else
+  echo "Regenerating DH params"
+  openssl dhparam -out "$data_path/conf/ssl-dhparams.pem" 4096 # 4096 bits
 fi
 
 echo "### Creating dummy certificate for $domains ..."
