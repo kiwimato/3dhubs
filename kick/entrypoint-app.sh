@@ -4,6 +4,7 @@ cd /home
 virtualenv env
 source env/bin/activate
 cd app
+chown 103:1337 /home/app/uwsgi/
 
 # first run
 if [[ ! -f /tmp/requirements.txt.lock ]]; then
@@ -24,4 +25,4 @@ if [[ ! -f /tmp/requirements.txt.lock ]]; then
 fi
 
 #uwsgi --socket 0.0.0.0:5000 --protocol=http -w app
-uwsgi --ini /home/app/uwsgi.ini
+exec runuser -u app "uwsgi --ini /home/app/uwsgi.ini"

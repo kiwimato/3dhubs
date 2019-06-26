@@ -1,3 +1,4 @@
+LABEL maintainer="dub2sauce@gmail.com"
 FROM nginx:latest
 
 #RUN apt-get update
