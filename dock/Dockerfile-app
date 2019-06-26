@@ -4,8 +4,8 @@ RUN apt-get update
 RUN apt-get install -y --no-install-recommends supervisor postgresql-client
 
 RUN pip3 install virtualenv
-RUN mkdir -p /kick /home/app/env
-RUN chown 102:1337 /home/app -R
+RUN mkdir -p /kick /home/app /home/env
+RUN chown 102:1337 /home/env -R
 
 ADD ./conf/uwsgi.ini /home/app/uwsgi.ini
 

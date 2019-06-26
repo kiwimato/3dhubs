@@ -4,7 +4,8 @@ FROM python:3.6-stretch
 #RUN apt-get install -y --no-install-recommends supervisor postgresql-client
 
 RUN pip3 install virtualenv celery
-RUN mkdir /home/app
+RUN mkdir /home/app /home/env
+RUN chown 102:1337 /home/env -R
 
 #ADD ./app /home/app
 #WORKDIR /home/app

@@ -1,8 +1,9 @@
 #!/bin/bash
 
-cd /home/app
+cd /home
 virtualenv env
 source env/bin/activate
+cd app
 
 # first run
 if [[ ! -f /tmp/requirements.txt.lock ]]; then

@@ -41,7 +41,7 @@ services:
     user: 103:1337
     build:
       context: ./
-      dockerfile: dock/Dockerfile-celery
+      dockerfile: dock/Dockerfile-worker
     env_file:
       - dock/rabbitmq.env
     volumes:
