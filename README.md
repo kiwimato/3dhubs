@@ -3,6 +3,7 @@
 ## Get Started
 
 You can see the project live on: https://3dhubz.dacia.ninja/ (It's just a DigitalOcean VM running CentOS and Docker) 
+Also SSL report about ciphers, and so on: https://www.ssllabs.com/ssltest/analyze.html?d=3dhubz.dacia.ninja
 
 The app should work after a clone & running `docker-compose up`, however due to LetsEncrypt & HSTS being enabled you can only connect to the IP of the `nginx` container. This is mainly due to the fact that on the first run dummy SSL certificates are used just so Nginx starts. Afterwards they get replaced by proper LetsEncrypt certificates using the `init-letsencrypt.sh` script.
 So, basically all we need is (without proper LetsEncrypt certs):
